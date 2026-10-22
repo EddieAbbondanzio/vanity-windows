@@ -26,11 +26,12 @@ export default class VanityWindowsPlugin extends Plugin {
   }
 
   async loadSettings() {
-    const loaded: VanityWindowsSettings | null = await this.loadData();
+    const loaded: VanityWindowsSettings | null | undefined =
+      await this.loadData();
 
     // Theme may have been deleted, or the file could have been edited.
     if (loaded == null || THEMES[loaded.theme] === undefined) {
-      if (loaded !== null) {
+      if (loaded !== null && loaded !== undefined) {
         console.warn(
           `vanity-windows: Unknown theme "${loaded.theme}". Falling back to "${DEFAULT_SETTINGS.theme}"`,
         );
