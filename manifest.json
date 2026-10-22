@@ -3,8 +3,8 @@
   "name": "Vanity Windows",
   "version": "0.1.0",
   "minAppVersion": "1.5.0",
-  "description": "",
-  "author": "",
-  "authorUrl": "",
+  "description": "Custom window colors on a per vault basis",
+  "author": "EddieAbbondanzio",
+  "authorUrl": "https://github.com/EddieAbbondanzio",
   "isDesktopOnly": false
 }

@@ -1,6 +1,6 @@
 # Vanity Windows
 
-An Obsidian Notes plugin for changing the window color. Handy for when you have multiple vaults open and need any easy way to tell them apart.
+An Obsidian Notes plugin for changing the window color on a per vault basis. Handy for when you have multiple vaults open and need an easy way to tell them apart.
 
 Inspired by the [Peacock VS Code extension](https://marketplace.visualstudio.com/items?itemName=johnpapa.vscode-peacock).
 
