@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { App, PluginSettingTab, SettingDefinitionItem } from "obsidian";
 import type VanityWindowsPlugin from "./main";
 
 export interface WindowTheme {
@@ -87,24 +87,35 @@ export class VanityWindowsSettingTab extends PluginSettingTab {
     super(app, plugin);
   }
 
-  display(): void {
-    const { containerEl } = this;
-    containerEl.empty();
+  getSettingDefinitions(): SettingDefinitionItem[] {
+    const themeEntries = Object.entries(THEMES).map(([id, { name }]) => [
+      id,
+      name,
+    ]);
 
-    new Setting(containerEl)
-      .setName("Window theme")
-      .setDesc("Colors for the window bar.")
-      .addDropdown((dropdown) => {
-        for (const [id, theme] of Object.entries(THEMES)) {
-          dropdown.addOption(id, theme.name);
-        }
-        dropdown
-          .setValue(this.plugin.settings.theme)
-          .onChange(async (value) => {
-            this.plugin.settings.theme = value as ThemeId;
-            await this.plugin.saveSettings();
-            this.plugin.applyTheme();
-          });
-      });
+    return [
+      {
+        name: "Window theme",
+        desc: "Colors for the window bar.",
+        aliases: ["color", "titlebar"],
+        control: {
+          type: "dropdown",
+          key: "theme",
+          options: Object.fromEntries(themeEntries),
+          defaultValue: DEFAULT_SETTINGS.theme,
+        },
+      },
+    ];
+  }
+
+  async setControlValue(key: string, value: unknown): Promise<void> {
+    if (key !== "theme") throw new Error(`Unknown setting: ${key}`);
+
+    const theme = value as ThemeId;
+    if (THEMES[theme] === undefined) throw new Error(`Unknown theme: ${theme}`);
+
+    this.plugin.settings.theme = theme;
+    await this.plugin.saveSettings();
+    this.plugin.applyTheme();
   }
 }
