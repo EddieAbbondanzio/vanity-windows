@@ -22,7 +22,8 @@
     {
       "label": "Generate release",
       "type": "process",
-      "command": "./scripts/generate-release"
+      "command": "./scripts/generate-release",
+      "problemMatcher": []
     }
   ]
 }
