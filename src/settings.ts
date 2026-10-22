@@ -26,8 +26,8 @@ export const THEMES = {
   },
   lemonade: {
     name: "Lemonade",
-    background: "#9a8f3a",
-    backgroundFocused: "#d9c767",
+    background: "#c29742",
+    backgroundFocused: "#f0de6c",
     // Darkened yellow is still too light for light text.
     text: "#2a2300",
     textFocused: "#3d3200",
