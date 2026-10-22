@@ -1,0 +1,137 @@
+#!/usr/bin/env python3
+"""Bump the plugin version, build, and generate assets in releases/<version>/.
+
+Usage: scripts/generate-release [major|minor|patch|none]
+"""
+
+import argparse
+import json
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+BUMPS = ("major", "minor", "patch", "none")
+
+ASSETS = {
+    "main.js": ROOT / "build" / "main.js",
+    "manifest.json": ROOT / "manifest.json",
+    "styles.css": ROOT / "styles.css",
+}
+
+
+def run(*cmd: str, capture: bool = False) -> str:
+    result = subprocess.run(
+        cmd, cwd=ROOT, check=True, text=True, capture_output=capture
+    )
+    return result.stdout.strip() if capture else ""
+
+
+def read_json(name: str) -> dict:
+    return json.loads((ROOT / name).read_text())
+
+
+def write_json(name: str, data: dict) -> None:
+    (ROOT / name).write_text(json.dumps(data, indent=2) + "\n")
+
+
+def bump_version(version: str, kind: str) -> str:
+    major, minor, patch = (int(p) for p in version.split("."))
+    if kind == "major":
+        return f"{major + 1}.0.0"
+    if kind == "minor":
+        return f"{major}.{minor + 1}.0"
+    if kind == "patch":
+        return f"{major}.{minor}.{patch + 1}"
+    raise ValueError(f"Unknown bump: {kind}")
+
+
+def prompt_bump(current: str) -> str:
+    for kind in BUMPS:
+        preview = current if kind == "none" else bump_version(current, kind)
+        print(f"  {kind:<5}  -> {preview}")
+    choice = input("Bump: ").strip().lower()
+    if choice not in BUMPS:
+        sys.exit(f"Invalid bump: {choice!r}")
+    return choice
+
+
+def preflight() -> None:
+    if run("git", "status", "--porcelain", capture=True):
+        sys.exit("Working tree is dirty. Commit or stash first.")
+    branch = run("git", "rev-parse", "--abbrev-ref", "HEAD", capture=True)
+    if branch != "master":
+        sys.exit(f"On branch {branch!r}, expected 'master'.")
+    if not shutil.which("npm"):
+        sys.exit("npm not found on PATH.")
+
+
+def apply_version(version: str) -> None:
+    manifest = read_json("manifest.json")
+    manifest["version"] = version
+    write_json("manifest.json", manifest)
+
+    package = read_json("package.json")
+    package["version"] = version
+    write_json("package.json", package)
+
+    lock = read_json("package-lock.json")
+    lock["version"] = version
+    lock["packages"][""]["version"] = version
+    write_json("package-lock.json", lock)
+
+    versions = read_json("versions.json")
+    versions[version] = manifest["minAppVersion"]
+    write_json("versions.json", versions)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("bump", nargs="?", choices=BUMPS)
+    args = parser.parse_args()
+
+    preflight()
+
+    current = read_json("manifest.json")["version"]
+    if read_json("package.json")["version"] != current:
+        sys.exit("manifest.json and package.json versions disagree.")
+
+    kind = args.bump or prompt_bump(current)
+    version = current if kind == "none" else bump_version(current, kind)
+
+    out_dir = ROOT / "releases" / version
+    if kind != "none":
+        if out_dir.exists():
+            sys.exit(f"{out_dir} already exists.")
+        if run("git", "tag", "--list", version, capture=True):
+            sys.exit(f"Tag {version} already exists.")
+
+    run("npm", "run", "build")
+
+    if kind != "none":
+        apply_version(version)
+        run(
+            "git",
+            "add",
+            "manifest.json",
+            "package.json",
+            "package-lock.json",
+            "versions.json",
+        )
+        run("git", "commit", "-m", version)
+        run("git", "tag", version)
+
+    out_dir.mkdir(parents=True, exist_ok=True)
+    for name, src in ASSETS.items():
+        shutil.copy2(src, out_dir / name)
+
+    print(f"\nRelease {version} staged in {out_dir.relative_to(ROOT)}/")
+    if kind != "none":
+        print(
+            f"Next: git push --follow-tags, then create GitHub release '{version}' with those files."
+        )
+
+
+if __name__ == "__main__":
+    main()
