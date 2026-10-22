@@ -13,7 +13,9 @@
     "isolatedModules": true,
     "strict": true,
     "noUncheckedIndexedAccess": true,
-    "lib": ["DOM", "ES2021"]
+    "lib": ["DOM", "ES2021"],
+    "rootDir": "src",
+    "outDir": "build"
   },
   "include": ["src/**/*.ts"]
 }
