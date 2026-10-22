@@ -128,9 +128,10 @@ def main() -> None:
 
     print(f"\nRelease {version} staged in {out_dir.relative_to(ROOT)}/")
     if kind != "none":
-        print(
-            f"Next: git push --follow-tags, then create GitHub release '{version}' with those files."
-        )
+        # Obsidian reads manifest.json from master so we need to remember to
+        # push every commit and the tag up.
+        run("git", "push", "--atomic", "origin", "master", version)
+        print(f"Next: create GitHub release '{version}' with those files.")
 
 
 if __name__ == "__main__":
