@@ -44,7 +44,8 @@ export default class VanityWindowsPlugin extends Plugin {
 
   applyTheme() {
     const theme = THEMES[this.settings.theme];
-    if (!theme) throw new Error(`Unknown theme: ${this.settings.theme}`);
+    if (theme === undefined)
+      throw new Error(`Unknown theme: ${this.settings.theme}`);
 
     this.styleEl.textContent = `
 body:not(.is-focused) {
