@@ -12,22 +12,22 @@ export interface WindowTheme {
 export const THEMES = {
   bubblegum: {
     name: "Bubblegum",
-    background: "#852852",
+    background: "#87414e",
     backgroundFocused: "#e64590",
     text: "#f6d5e2",
     textFocused: "#2a0012",
   },
   tangerine: {
     name: "Tangerine",
-    background: "#8c4210",
-    backgroundFocused: "#f2711c",
+    background: "#824825",
+    backgroundFocused: "#ea8448",
     text: "#fbe0cc",
     textFocused: "#3a1600",
   },
   lemonade: {
     name: "Lemonade",
     background: "#9a8f3a",
-    backgroundFocused: "#e6d45c",
+    backgroundFocused: "#d9c767",
     // Darkened yellow is still too light for light text.
     text: "#2a2300",
     textFocused: "#3d3200",
@@ -42,7 +42,7 @@ export const THEMES = {
   aqua: {
     name: "Aqua",
     background: "#006d8a",
-    backgroundFocused: "#00c4f0",
+    backgroundFocused: "#10a3de",
     text: "#d0f2fc",
     textFocused: "#002a36",
   },
@@ -62,8 +62,8 @@ export const THEMES = {
   },
   coral: {
     name: "Coral",
-    background: "#852127",
-    backgroundFocused: "#d32f3b",
+    background: "#8e302c",
+    backgroundFocused: "#ca4d46",
     text: "#f8d6d8",
     textFocused: "#ffffff",
   },
