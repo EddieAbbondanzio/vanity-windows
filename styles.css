@@ -1,1 +1,12 @@
-/* Plugin styles. Prefer Obsidian CSS variables (e.g. var(--background-primary)) for theme compatibility. */
+body:not(.is-focused) {
+	--titlebar-background: var(--vanity-windows-background);
+	--titlebar-background-focused: var(--vanity-windows-background);
+	--titlebar-text-color: var(--vanity-windows-text);
+	--titlebar-text-color-focused: var(--vanity-windows-text);
+}
+body.is-focused {
+	--titlebar-background: var(--vanity-windows-background-focused);
+	--titlebar-background-focused: var(--vanity-windows-background-focused);
+	--titlebar-text-color: var(--vanity-windows-text-focused);
+	--titlebar-text-color-focused: var(--vanity-windows-text-focused);
+}

@@ -4,19 +4,22 @@ import {
   THEMES,
   VanityWindowsSettings,
   VanityWindowsSettingTab,
+  WindowTheme,
 } from "./settings";
 
 export default class VanityWindowsPlugin extends Plugin {
   settings: VanityWindowsSettings = { ...DEFAULT_SETTINGS };
-  private styleEl!: HTMLStyleElement;
 
   async onload() {
     await this.loadSettings();
 
-    this.styleEl = document.head.createEl("style", {
-      attr: { id: "vanity-windows-theme" },
+    this.register(() => {
+      const theme = THEMES[this.settings.theme];
+      const themeVars = buildThemeCSSVars(theme);
+      for (const prop of Object.keys(themeVars)) {
+        document.body.style.removeProperty(prop);
+      }
     });
-    this.register(() => this.styleEl.remove());
     this.applyTheme();
 
     this.addSettingTab(new VanityWindowsSettingTab(this.app, this));
@@ -47,18 +50,18 @@ export default class VanityWindowsPlugin extends Plugin {
     if (theme === undefined)
       throw new Error(`Unknown theme: ${this.settings.theme}`);
 
-    this.styleEl.textContent = `
-body:not(.is-focused) {
-	--titlebar-background: ${theme.background};
-	--titlebar-background-focused: ${theme.background};
-	--titlebar-text-color: ${theme.text};
-	--titlebar-text-color-focused: ${theme.text};
-}
-body.is-focused {
-	--titlebar-background: ${theme.backgroundFocused};
-	--titlebar-background-focused: ${theme.backgroundFocused};
-	--titlebar-text-color: ${theme.textFocused};
-	--titlebar-text-color-focused: ${theme.textFocused};
-}`;
+    const themeVars = buildThemeCSSVars(theme);
+    for (const [prop, value] of Object.entries(themeVars)) {
+      document.body.style.setProperty(prop, value);
+    }
   }
+}
+
+function buildThemeCSSVars(theme: WindowTheme): Record<string, string> {
+  return {
+    "--vanity-windows-background": theme.background,
+    "--vanity-windows-background-focused": theme.backgroundFocused,
+    "--vanity-windows-text": theme.text,
+    "--vanity-windows-text-focused": theme.textFocused,
+  };
 }
