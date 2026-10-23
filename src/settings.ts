@@ -76,7 +76,7 @@ export interface VanityWindowsSettings {
 }
 
 export const DEFAULT_SETTINGS: VanityWindowsSettings = {
-  theme: "bubblegum",
+  theme: "aqua",
 };
 
 export class VanityWindowsSettingTab extends PluginSettingTab {
