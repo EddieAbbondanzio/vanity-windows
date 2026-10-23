@@ -10,3 +10,34 @@ body.is-focused {
 	--titlebar-text-color: var(--vanity-windows-text-focused);
 	--titlebar-text-color-focused: var(--vanity-windows-text-focused);
 }
+
+body {
+	--vanity-windows-icon-color: var(--icon-color);
+	--vanity-windows-icon-color-hover: var(--icon-color-hover);
+	--vanity-windows-icon-color-active: var(--icon-color-active);
+	--vanity-windows-icon-color-focused: var(--icon-color-focused);
+	--vanity-windows-tab-text-color-focused-active-current: var(--tab-text-color-focused-active-current);
+}
+
+body.is-hidden-frameless .workspace-tabs.mod-top .workspace-tab-header-container,
+body.is-hidden-frameless .sidebar-toggle-button {
+	--icon-color: var(--titlebar-text-color);
+	--icon-color-hover: var(--titlebar-text-color);
+	--icon-color-active: var(--titlebar-text-color);
+	--icon-color-focused: var(--titlebar-text-color);
+	/* Default 0.85 blends the icons into the colored background. */
+	--icon-opacity: 1;
+}
+
+body.is-hidden-frameless .workspace-tabs.mod-top .workspace-tab-header-container {
+	--tab-text-color: var(--titlebar-text-color);
+	--tab-text-color-focused: var(--titlebar-text-color);
+	--tab-text-color-focused-active-current: var(--titlebar-text-color);
+}
+body.is-hidden-frameless .mod-root .workspace-tab-header.is-active {
+	--icon-color: var(--vanity-windows-icon-color);
+	--icon-color-hover: var(--vanity-windows-icon-color-hover);
+	--icon-color-active: var(--vanity-windows-icon-color-active);
+	--icon-color-focused: var(--vanity-windows-icon-color-focused);
+	--tab-text-color-focused-active-current: var(--vanity-windows-tab-text-color-focused-active-current);
+}
